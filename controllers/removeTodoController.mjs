@@ -19,10 +19,20 @@ export const removeTodoController = (req, res) => {
   const { documents } = listJSON;
   const requestedDeleteId = req.body._id;
 
+ 
+  const isRequestedDeleteId = typeof requestedDeleteId === "string";
+
+  if (!isRequestedDeleteId) {
+    res.status(400).json({
+      message: "Invalid delete id",
+    });
+    return;
+  }
+
   const newDocuments = documents.filter(({ _id }) => _id !== requestedDeleteId);
   const deletedCount = documents.length - newDocuments.length;
   listJSON.documents = newDocuments;
-  
+
   res.json({
     deletedCount,
   });
