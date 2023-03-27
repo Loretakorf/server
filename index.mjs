@@ -7,7 +7,8 @@ import { removeTodoController } from "./controllers/removeTodoController.mjs";
 import { editTodoControlller } from "./controllers/editTodoControlller.mjs";
 import { registerController } from "./controllers/registerController.mjs";
 import { loginController } from "./controllers/loginController.mjs";
-
+import { decodeToken } from "./utils/token.mjs";
+import { usersList } from "./data/users.mjs";
 
 dotenv.config();
 const app = express();
@@ -18,8 +19,17 @@ const corsMiddleware = cors();
 
 app.use(bodyParser);
 app.use(corsMiddleware);
+app.use((req, _, next) => {
+  if (req.headers.token) {
+    const authId = decodeToken(req.headers.token)?.id;
+    const user = usersList.find(({ _id }) => _id === authId);
+    if (user) req.user = user;
+  }
+  next();
+});
+
 // const cache = [];
-app.use(express.json()); //req, res, next bodyParser
+// app.use(express.json()); //req, res, next bodyParser
 
 app.get("/api/list", listController);
 app.post("/api/todo", createTodoController);
