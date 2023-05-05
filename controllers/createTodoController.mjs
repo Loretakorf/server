@@ -10,6 +10,7 @@ export const createTodoController = (req, res) => {
   const id = createId();
   console.log(id);
   
+  
   const { title, description, completed } = req.body;
   const isTitleValid = typeof title === "string" && title.length > 5;
   const isDescriptionValid =
